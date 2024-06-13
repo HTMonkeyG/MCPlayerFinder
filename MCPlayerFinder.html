@@ -26,8 +26,15 @@
     padding: 0;
   }
 
-  canvas {
-    width: 100%;
+  .canvas1 {
+    width: 65%;
+    margin: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(193,136,94,0.85);
+    box-shadow:0 0 8px rgba(193,136,94,.5);
+    -moz-box-shadow:0 0 8px rgba(193,136,94,.5);
+    -webkit-box-shadow:0 0 8px rgba(193,136,94,.5);
   }
   
   .main {
@@ -212,13 +219,9 @@
     <div class="ui insideBorder1">
     <button id="ctrl" class="startBtn" onclick="startBtnClick()">START</button>
     <br>
-    <canvas id="canvas" width=200 height=25>
+    <canvas id="canvas" class="canvas1">
     </canvas>
     <br>
-    状态: <input id="stateDisp" class="result insideBorder1" style="width: 40px;" readonly>
-    <br><br>
-    <input id="estiDisp" class="result insideBorder1" style="width:50%;" readonly>
-    <br><br>
     <input id="result" class="result insideBorder1" readonly>
     <br>
     <span style="display:block;margin-top:5px">目标玩家是否在回传列表中:</span>
@@ -241,6 +244,7 @@
   </div>
   </div>
 <script src="./Automac_1010_min.js"></script>
+<script src="./canvasDraw.js"></script>
 <script>
 const RadiusTooSmall     = '当前半径已经足够小了，\n再往下误差就会变大了qwq，\n建议转用游戏内方法进行更精确定位。';
 const PlayerNotFound1    = 'Oops! 玩家似乎消失了。\n可能他离开了你所在的维度。\n复位重新查找试试？\n可以把初值设为玩家消失之前的圆心半径减少耗时哦 :D';
@@ -253,12 +257,9 @@ var step    = 0,
     active  = false;
 
 var Out = document.getElementById('result');
-var C   = document.getElementById("canvas");
-var CTX = C.getContext('2d');
 
 workObj.cmdHandler = function(x){
   Out.value = genCmd(x.x,x.z,x.dx+x.x,x.dz+x.z);
-  document.getElementById("estiDisp").value = `预计目标坐标：(${elderWObj.x+elderWObj.dx/2},${elderWObj.z+elderWObj.dz/2})；目标范围：±${Math.max(elderWObj.dx/2,elderWObj.dx/2)}`;
   if(Math.max(x.dx / 2, x.dx / 2) <= 400)alert(RadiusTooSmall);
 };
 
