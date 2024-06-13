@@ -9,38 +9,24 @@
    user-scalable=no">
   <title>通过选择器查找玩家</title>
   <meta charset="utf-8">
-  <div class="center">
-   <h1>玩家查找器v0.2</h1>
-   <h3>猴某人(HTMG)制作</h3>
-  </div>
+  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <style>
-   .center{
+   .binarySearch{
      text-align: center;
+     border-style: solid;
+     border-width: 0px;
+     border-color: #000000
    }
    .center2{
 	    height: 75px;
    }
-   #pic{
-     width: 100%;
-   }
    #ctrl{
+     display: block;
      width: 100%;
 	    height: 50px;
-     border-style: none;
+     border-style: outset;
      background-color: #f3ff94;
-   }
-   #yes{
-     width: 100%;
-	    height: 33%;
-     border-style: none none solid none;
-     border-color: #c1a072;
-     background-color: #f3ff94;
-   }
-   #no{
-     width: 100%;
-	    height: 33%;
-     border-style: none;
-     background-color: #f3ff94;
+     border-color: #f0fc91 #c1a072 #c1a072 #f0fc91;
    }
    #result{
      width: 100%;
@@ -51,17 +37,8 @@
      font-size: 15px;
      text-align: center;
    }
-   #state{
-     width: 98%;
-     height: 20px;
-     background-color: #f7ffb9;
-     border-style: solid;
-     border-color: #c1a072;
-     font-size: 15px;
-     text-align: center;
-   }
-   #step{
-     width: 98%;
+   .text1{
+     width: 100%;
      height: 20px;
      background-color: #f7ffb9;
      border-style: solid;
@@ -69,33 +46,109 @@
      border-color: #c1a072;
      font-size: 15px;
      text-align: center;
+     margin: 0px 0px 10px 0px;
+   }
+
+
+
+
+   input{
+     -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+     box-sizing: border-box;
+   }
+
+   ul {
+     list-style-type: none;
+     margin: 0;
+     padding: 0;
+     overflow: hidden;
+     background-color: #d1b082;
+   }
+
+   .nav li {
+     float: left;
+   }
+
+   .nav li a {
+     display: block;
+     color: white;
+     text-align: center;
+     padding: 14px 16px;
+     text-decoration: none;
+   }
+
+   .nav li a:hover {
+     background-color: #c1a072;
+   }
+
+   .choose li {
+     float: left;
+     width: 50%;
+   }
+
+   .choose li button {
+     width: 100%;
+     padding: 14px 16px;
+     display: block;
+     background-color: #f3ff94;
+     border-color: #f0fc91 #c1a072 #c1a072 #f0fc91;
+   }
+
+   .active {
+     background-color: #c1a072;
+     border-style: solid;
+     border-width: 3px 0px 0px 0px;
+     border-color: #f0f077;
    }
   </style>
  </head>
 
  <body style="background-color:#f7ffb9">
-  <div class="center">
-   <input type="button" onclick="start()" id="ctrl" value="开始">
+  <ul class="nav">
+   <li><a id="_1" class="active">二分查找</a></li>
+   <li><a id="_2">模糊查找</a></li>
+   <li><a id="_3">设置</a></li>
+   <li><a id="_4">关于</a></li>
+  </ul>
+
+  <br>
+
+  <div class="binarySearch">
+   <button onclick="start()" id="ctrl">开始</button>
    <br>
-   <input type="text" id="state" readonly>
+   <input type="text" class="text1" id="state" readonly>
    <br>
-   <input type="text" id="step" readonly>
+   <input type="text" id="step" class="text1" readonly>
    <div>
-    <input id="result" readonly>复制指令到聊天框</textarea>
+    <input id="result" readonly>
    </div>
    <div class="center2">
     选中的玩家中是否有目标玩家
-    <button onclick="Y()" id="yes">有</button>
-    <br>
-    <button onclick="N()" id="no">无</button>
-    <br>
-    <button onclick="settings()">
-     点按打开设置
-    </button>
+    <ul class="choose">
+     <li>
+      <button onclick="Y()" id="yes">有</button>
+     </li>
+     <li>
+      <button onclick="N()" id="no">无</button>
+     </li>
+    </ul>
    </div>
-   <div class="settings" style="display:none">
-    <input type="text" id="value" value="100000">
-   </div>
+  </div>
+
+  <div class="fuzzySearch">
+   <p>该功能暂未开放</p>
+  </div>
+
+  <div class="settings">
+   <p>初始查找范围值:(重置后生效)</p>
+   <input type="number" class="text1" id="initValue" value="100000" onchange="changeInitValue()">
+  </div>
+
+  <div class="about">
+   <h1>玩家查找器v0.3</h1>
+   <h2>HTMG 制作</h2>
+   <p>原理：使用选择器和选择器参数估计玩家大致位置</p>
   </div>
 
 <script>
@@ -114,38 +167,96 @@ var Cmd = [ '/w @s @a[', ']' ],
     CORNER = [ 0, 0, 0 ],
     DELTA = [ 0, 0, 0 ],
     Step = 0,
-    State = 'STANDBY';
+    State = 'STANDBY',
+    Initial = 100000;
 
 /* 功能性变量 */
 var Out = document.getElementById('result');
 var state = document.getElementById("state");
 var step = document.getElementById("step");
 
+$(document).ready(() => {
+  $('.binarySearch').show();
+  $('.fuzzySearch').hide();
+  $('.settings').hide();
+  $('.about').hide();
+
+  $('#_1').click(() => {
+    $('.binarySearch').show();
+    $('.fuzzySearch').hide();
+    $('.settings').hide();
+    $('.about').hide();
+
+    $('#_1').addClass('active');
+    $('#_2,#_3,#_4').removeClass('active');
+  });
+
+  $('#_2').click(() => {
+    $('.binarySearch').hide();
+    $('.fuzzySearch').show();
+    $('.settings').hide();
+    $('.about').hide();
+
+    $('#_2').addClass('active');
+    $('#_1,#_3,#_4').removeClass('active');
+  });
+
+  $('#_3').click(() => {
+    $('.binarySearch').hide();
+    $('.fuzzySearch').hide();
+    $('.settings').show();
+    $('.about').hide();
+
+    $('#_3').addClass('active');
+    $('#_1,#_2,#_4').removeClass('active');
+  });
+
+  $('#_4').click(() => {
+    $('.binarySearch').hide();
+    $('.fuzzySearch').hide();
+    $('.settings').hide();
+    $('.about').show();
+
+    $('#_4').addClass('active');
+    $('#_1,#_2,#_3').removeClass('active');
+  });
+
+  $('#ctrl').click(() => {
+    if(State == 'STANDBY'){
+      State = 'QUADRANT1';
+	     DELTA = [ Initial, 512, Initial ];
+
+	     $('#ctrl').html('复位');
+
+      Update();
+    } else {
+      Out.value = '复制指令到聊天框';
+      State = 'STANDBY';
+      CORNER = [ 0, 0, 0 ];
+      DELTA = [ 0, 0, 0 ];
+      Step = 0;
+  
+      $('#ctrl').html('开始');
+
+      Update();
+    }
+  });
+});
+
+function changeInitValue(){
+  var n = document.getElementById('initValue').value;
+  Initial = Number(n);
+}
+
 function Update(){
-  step.innerHTML = "步数: " + Step;
-  state.innerHTML = "状态: " + State;
+  step.value = "步数: " + Step;
+  state.value = "状态: " + State;
   
   if(State != 'STANDBY'){
-    Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1],
+    Out.value = CMD('CORNER', [ CORNER[0], CORNER[1],
       CORNER[2], DELTA[0],
       DELTA[1], DELTA[2]
     ]);
-  }
-}
-
-function start(){
-  if(State == 'STANDBY'){
-    State = 'QUADRANT1';
-	   DELTA = [ 10000000, 512, 10000000 ];
-    
-	document.getElementById('ctrl').value = '复位';
-    if(State != 'STANDBY'){
-      Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1], CORNER[2], DELTA[0], DELTA[1], DELTA[2] ]);
-    }
-
-    Update();
-  } else {
-    reset();
   }
 }
 
@@ -178,9 +289,6 @@ function Y(){
   }
   
   if(State != 'STANDBY')Step++;
-  if(State != 'STANDBY'){
-    Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1], CORNER[2], DELTA[0], DELTA[1], DELTA[2] ]);
-  }
 
   Update();
 }
@@ -188,15 +296,15 @@ function Y(){
 function N(){
   switch(State){
     case 'QUADRANT1':
-      DELTA = [ -10000000, 512, 10000000 ];
+      DELTA = [ -Initial, 512, Initial ];
 	     State = 'QUADRANT2';
       break;
     case 'QUADRANT2':
-      DELTA = [ -10000000, 512, -10000000 ];
+      DELTA = [ -Initial, 512, -Initial ];
       State = 'QUADRANT3';
       break;
     case 'QUADRANT3':
-  	   DELTA = [ 10000000, 512, -10000000 ];
+  	   DELTA = [ Initial, 512, -Initial ];
 	     State = 'QUADRANT4';
 	     break;
     case 'QUADRANT4':
@@ -215,23 +323,12 @@ function N(){
   }
   
   if(State != 'STANDBY')Step++;
-  if(State != 'STANDBY'){
-    Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1], CORNER[2], DELTA[0], DELTA[1], DELTA[2] ]);
-  }
 
   Update();
 }
 
 function reset(){
-  State = 'STANDBY';
-  Out.innerHTML = '复制指令到聊天框';
-  CORNER = [ 0, 0, 0 ];
-  DELTA = [ 0, 0, 0 ];
-  Step = 0;
   
-  document.getElementById('ctrl').value = '开始';
-
-  Update();
 }
 
 function CMD(type, param){
