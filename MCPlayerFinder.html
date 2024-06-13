@@ -17,9 +17,11 @@
      border-width: 0px;
      border-color: #000000
    }
+
    .center2{
 	    height: 75px;
    }
+
    #ctrl{
      display: block;
      width: 100%;
@@ -28,6 +30,7 @@
      background-color: #f3ff94;
      border-color: #f0fc91 #c1a072 #c1a072 #f0fc91;
    }
+
    #result{
      width: 100%;
      height: 50px;
@@ -37,6 +40,7 @@
      font-size: 15px;
      text-align: center;
    }
+
    .text1{
      width: 100%;
      height: 20px;
@@ -48,9 +52,6 @@
      text-align: center;
      margin: 0px 0px 10px 0px;
    }
-
-
-
 
    input{
      -webkit-box-sizing: border-box;
@@ -68,6 +69,7 @@
 
    .nav li {
      float: left;
+     width: 33%;
    }
 
    .nav li a {
@@ -107,9 +109,8 @@
  <body style="background-color:#f7ffb9">
   <ul class="nav">
    <li><a id="_1" class="active">二分查找</a></li>
-   <li><a id="_2">模糊查找</a></li>
    <li><a id="_3">设置</a></li>
-   <li><a id="_4">关于</a></li>
+   <li><a id="_4">关于/帮助</a></li>
   </ul>
 
   <br>
@@ -120,6 +121,10 @@
    <input type="text" class="text1" id="state" readonly>
    <br>
    <input type="text" id="step" class="text1" readonly>
+   <br>
+   <input type="text" id="pos" class="text1" readonly>
+   <br>
+   <input type="text" id="radius" class="text1" readonly>
    <div>
     <input id="result" readonly>
    </div>
@@ -133,6 +138,7 @@
       <button onclick="N()" id="no">无</button>
      </li>
     </ul>
+    
    </div>
   </div>
 
@@ -145,10 +151,19 @@
    <input type="number" class="text1" id="initValue" value="100000" onchange="changeInitValue()">
   </div>
 
-  <div class="about">
-   <h1>玩家查找器v0.3</h1>
+  <div class="about" style="text-align:center">
+   <h1>玩家查找器v0.4</h1>
    <h2>HTMG 制作</h2>
    <p>原理：使用选择器和选择器参数估计玩家大致位置</p>
+   <p>
+    本模块仅能提供大致范围，非准确坐标
+    <br>
+    参考数值(内切圆半径)：
+    <br>
+    4级地图：512
+    <br>
+    本模块查找精确度在半径低于512时大幅下降
+   </p>
   </div>
 
 <script>
@@ -168,12 +183,15 @@ var Cmd = [ '/w @s @a[', ']' ],
     DELTA = [ 0, 0, 0 ],
     Step = 0,
     State = 'STANDBY',
-    Initial = 100000;
+    Initial = 100000,
+    Active = false;
 
 /* 功能性变量 */
 var Out = document.getElementById('result');
 var state = document.getElementById("state");
 var step = document.getElementById("step");
+var pos = document.getElementById("pos");
+var radius = document.getElementById("radius");
 
 $(document).ready(() => {
   $('.binarySearch').show();
@@ -226,19 +244,30 @@ $(document).ready(() => {
       State = 'QUADRANT1';
 	     DELTA = [ Initial, 512, Initial ];
 
-	     $('#ctrl').html('复位');
+	     $('#ctrl').html('双击复位');
+
+      ctrl.style.backgroundColor = "#ffd094";
+      ctrl.style.borderColor = "#fce091 #c1a072 #c1a072 #fce091";
 
       Update();
     } else {
-      Out.value = '复制指令到聊天框';
-      State = 'STANDBY';
-      CORNER = [ 0, 0, 0 ];
-      DELTA = [ 0, 0, 0 ];
-      Step = 0;
-  
-      $('#ctrl').html('开始');
+      if(!Active){
+        Active = true;
+        setTimeout(()=>{Active = false;}, 200);
+      } else {
+        Out.value = '复制指令到聊天框';
+        State = 'STANDBY';
+        CORNER = [ 0, 0, 0 ];
+        DELTA = [ 0, 0, 0 ];
+        Step = 0;
 
-      Update();
+        $('#ctrl').html('开始');
+
+        ctrl.style.backgroundColor = "#f3ff94";
+        ctrl.style.borderColor = "#f0fc91 #c1a072 #c1a072 #f0fc91";
+
+        Update();
+      }
     }
   });
 });
@@ -257,6 +286,14 @@ function Update(){
       CORNER[2], DELTA[0],
       DELTA[1], DELTA[2]
     ]);
+
+    var centerX = CORNER[0] + DELTA[0] / 2;
+    var centerZ = CORNER[2] + DELTA[2] / 2;
+    var r = Math.sqrt( DELTA[0] * DELTA[0] + DELTA[2] * DELTA[2] ) / 2;
+    r = Math.round(r * 1000) / 1000;
+
+    pos.value = '预计目标坐标(圆心): ' + centerX + ',' + centerZ;
+    radius.value = '坐标误差范围(半径): ' + r;
   }
 }
 
