@@ -11,27 +11,11 @@
   <meta charset="utf-8">
   <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <style>
-   * {
-     box-sizing: border-box;
-   }
-  
-   .col-1 {width: 8.33%;}
-   .col-2 {width: 16.66%;}
-   .col-3 {width: 25%;}
-   .col-4 {width: 33.33%;}
-   .col-5 {width: 41.66%;}
-   .col-6 {width: 50%;}
-   .col-7 {width: 58.33%;}
-   .col-8 {width: 66.66%;}
-   .col-9 {width: 75%;}
-   .col-10 {width: 83.33%;}
-   .col-11 {width: 91.66%;}
-   .col-12 {width: 100%;} 
-   
-   [class*="col-"] {
-     float: left;
-     padding: 15px;
-     border: 1px solid red;
+   .binarySearch {
+     text-align: center;
+     border-style: solid;
+     border-width: 0px;
+     border-color: #000000
    }
 
    .center2 {
@@ -46,18 +30,9 @@
      background-color: #f3ff94;
      border-color: #f0fc91 #c1a072 #c1a072 #f0fc91;
    }
-   
-   #disp {
-     border: 1px solid red;
-   }
-   
-   #binarySearch {
-     height: 100%;
-   }
 
-   #canvas {
-     
-     
+   canvas {
+     width: 100%;
    }
 
    #result {
@@ -135,19 +110,20 @@
   </style>
  </head>
 
- <body style="background-color:#ffffff">
+ <body style="background-color:#f7ffb9">
   <ul class="nav">
-   <li><a id="_1" class="active">二分查找</a></li>
+   <li><a id="_1" class="active">精细查找</a></li>
    <li><a id="_3">设置</a></li>
    <li><a id="_4">关于/帮助</a></li>
   </ul>
 
   <br>
 
-  <div id="binarySearch" class="col-3">
+  <div class="binarySearch">
    <button onclick="start()" id="ctrl">开始</button>
    <br>
-   
+   <canvas id="canvas" width=512 height=512>
+   </canvas>
    <div>
     <input id="result" readonly>
    </div>
@@ -164,14 +140,13 @@
     
    </div>
   </div>
-  
-  <!--<div class="col-9" id="disp">-->
-   <canvas id="canvas" class="col-9" width=512 height=64>
-   </canvas>
-  <!--</div>-->
+
+  <div class="fuzzySearch">
+   <p>该功能暂未开放</p>
+  </div>
 
   <div class="settings">
-   <p>初始查找范围值:(重置后生效)</p>
+   <p>初始查找顶点:(重置后生效)</p>
    <input type="number" class="text1" id="initValue" value="100000" onchange="changeInitValue()">
   </div>
 
@@ -179,11 +154,6 @@
    <h1>玩家查找器v0.5</h1>
    <h2>HTMG 制作</h2>
    <p>原理：使用选择器和选择器参数估计玩家大致位置</p>
-   <p>使用方法：<br>
-   复制查找页面下方文本框指令至游戏聊天栏<br>
-   如果指令返回的玩家名字里有目标，点选“有”<br>
-   否则点选“无”
-   </p>
    <p>
     本模块仅能提供大致范围，非准确坐标
     <br>
@@ -230,34 +200,48 @@ var CTX = C.getContext('2d');
 
 $(document).ready(() => {
   $('.binarySearch').show();
+  $('.fuzzySearch').hide();
   $('.settings').hide();
   $('.about').hide();
 
   $('#_1').click(() => {
-    $('#binarySearch').show();
+    $('.binarySearch').show();
+    $('.fuzzySearch').hide();
     $('.settings').hide();
     $('.about').hide();
 
     $('#_1').addClass('active');
-    $('#_2,#_4').removeClass('active');
+    $('#_2,#_3,#_4').removeClass('active');
+  });
+
+  $('#_2').click(() => {
+    $('.binarySearch').hide();
+    $('.fuzzySearch').show();
+    $('.settings').hide();
+    $('.about').hide();
+
+    $('#_2').addClass('active');
+    $('#_1,#_3,#_4').removeClass('active');
   });
 
   $('#_3').click(() => {
-    $('#binarySearch').hide();
+    $('.binarySearch').hide();
+    $('.fuzzySearch').hide();
     $('.settings').show();
     $('.about').hide();
 
     $('#_3').addClass('active');
-    $('#_1,#_4').removeClass('active');
+    $('#_1,#_2,#_4').removeClass('active');
   });
 
   $('#_4').click(() => {
     $('.binarySearch').hide();
+    $('.fuzzySearch').hide();
     $('.settings').hide();
     $('.about').show();
 
     $('#_4').addClass('active');
-    $('#_1,#_3').removeClass('active');
+    $('#_1,#_2,#_3').removeClass('active');
   });
 
   $('#ctrl').click(() => {
@@ -327,8 +311,8 @@ function draw(){
 
   var __SIZE__ = getWindowSize();
     
-  C.height = (__SIZE__[1] - C.offsetTop - 15);
-  C.width = __SIZE__[0] - C.offsetLeft - 15;
+  C.width = __SIZE__[0] * 4;
+  C.height = __SIZE__[0] * 4 * 0.75;
 
   CTX.clearRect(0, 0, C.width, C.height);
 
