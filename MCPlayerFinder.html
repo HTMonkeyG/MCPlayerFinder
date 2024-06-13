@@ -3,166 +3,174 @@
  <head>
   <meta name="viewport" 
    content="width=device-width, 
-   initial-scale=1.0, 
-   maximum-scale=1.0,
-   minimum-scale=1.0, 
-   user-scalable=no">
-  <title>通过选择器查找玩家</title>
+   initial-scale=1.0,
+   maximum-scale=1.0">
+  <title>MCPF v0.9</title>
   <meta charset="utf-8">
-  <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  <script>
+  function getWindowSize(){
+    var winWidth, winHeight;
+
+    if(window.innerWidth){
+      winWidth = window.innerWidth;
+    }else if((document.body) && (document.body.clientWidth)){
+      winWidth = document.body.clientWidth;
+    }
+    
+    if(window.innerHeight){
+      winHeight = window.innerHeight;
+    }else if((document.body) && (document.body.clientHeight)){
+      winHeight = document.body.clientHeight;
+    }
+  
+    if(document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth){
+      winHeight = document.documentElement.clientHeight;
+      winWidth = document.documentElement.clientWidth;
+    }
+  
+    return [winWidth, winHeight];
+  }
+  </script>
   <style>
-   .binarySearch {
-     text-align: center;
-     border-style: solid;
-     border-width: 0px;
-     border-color: #000000
-   }
-
-   .center2 {
-	    height: 75px;
-   }
-
-   #ctrl {
-     display: block;
-     width: 100%;
-	    height: 50px;
-     border-style: outset;
-     background-color: #f3ff94;
-     border-color: #f0fc91 #c1a072 #c1a072 #f0fc91;
-   }
-
-   canvas {
-     width: 100%;
-   }
-
-   #result {
-     width: 100%;
-     height: 50px;
-     background-color: #f7ffb9;
-     border-style: solid;
-     border-color: #c1a072;
-     font-size: 15px;
-     text-align: center;
-   }
-
-   .text1 {
-     width: 100%;
-     height: 20px;
-     background-color: #f7ffb9;
-     border-style: solid;
-     border-width: 2px;
-     border-color: #c1a072;
-     font-size: 15px;
-     text-align: center;
-     margin: 0px 0px 10px 0px;
-   }
-
-   input {
-     -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-     box-sizing: border-box;
-   }
-
-   ul {
-     list-style-type: none;
-     margin: 0;
-     padding: 0;
-     overflow: hidden;
-     background-color: #d1b082;
-   }
-
-   .nav li {
-     float: left;
-     width: 33%;
-   }
-
-   .nav li a {
-     display: block;
-     color: white;
-     text-align: center;
-     padding: 14px 16px;
-     text-decoration: none;
-   }
-
-   .nav li a:hover {
-     background-color: #c1a072;
-   }
-
-   .choose li {
-     float: left;
-     width: 50%;
-   }
-
-   .choose li button {
-     width: 100%;
-     padding: 14px 16px;
-     display: block;
-     background-color: #f3ff94;
-     border-color: #f0fc91 #c1a072 #c1a072 #f0fc91;
-   }
-
-   .active {
-     background-color: #c1a072;
-     border-style: solid;
-     border-width: 3px 0px 0px 0px;
-     border-color: #f0f077;
-   }
+  * {
+    display: box;
+  }
+  
+  input{
+    outline: none;
+  }
+  
+  body {
+    text-align: center;
+    background-color: #A7CAF0;
+    background-image: url('./MCPF_bg.png');
+    background-size: 256px;
+    background-repeat: repeat;
+    display: block;
+    height: 100%;
+  }
+  
+  .main {
+    display: block;
+    min-width: 400px;
+    max-width: 1000px;
+    width: 100%;
+    margin: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background-color: rgba(194,238,254,0.5);
+    border-radius: 20px;
+    font-size: 90%;
+  }
+  
+  .main-content {
+    display: block;
+    margin: 20px 20px 20px 20px;
+    padding: 10px 0px 0px 0px;
+  }
+  
+  .description {
+    text-align: left;
+    padding: 20px;
+  }
+  
+  .settings {
+    padding: 10px;
+    text-align: left;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(170,197,222)
+  }
+  
+  .ui {
+    padding: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(170,197,222)
+  }
+  
+  .label1 {
+    display: inline-block;
+    width: 40%;
+  }
+  
+  .text1 {
+    //width: 100px;
+  }
+  
+  .startBtn {
+    width: 50%;
+    height: 35px;
+  }
+  
+  .result {
+    width: 75%;
+    height: 30px;
+    background-color: rgba(255,255,255,0.1);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(170,197,222);
+    text-align: center;
+    font-size: 1.2em;
+  }
+  
+  .header {
+    width: 400px;
+    margin: 0px auto auto auto;
+  }
   </style>
  </head>
 
- <body style="background-color:#f7ffb9">
-  <ul class="nav">
-   <li><a id="_1" class="active">精细查找</a></li>
-   <li><a id="_3">设置</a></li>
-   <li><a id="_4">关于/帮助</a></li>
-  </ul>
-
-  <br>
-
-  <div class="binarySearch">
-   <button onclick="start()" id="ctrl">开始</button>
+ <body>
+ <aside style="width:5%">
+   <div>aaa</div>
+  </aside>
+ <div class="header">
+  <h1 style="width:100%">MCPlayerFinder v0.9</h1>
+  <h2 style="width:100%">Made by HTMonkeyG</h2>
+ </div>
+ <div class="main">
+  
+  <div class="main-content">
+   <div class="settings">
+    <label for="initValue" class="label1">Initial Range:</label>
+    <input type="text" class="text1" id="initRange" name="initValue" value="100000" onchange="changeInitRange()">
+    <br>
+    <label for="initPos"  class="label1">Initial center pos:</label>
+    <input type="text" class="text1" id="initPos" name="initPos" value="(0,0)" onchange="changeInitPos()">
+   </div>
    <br>
-   <canvas id="canvas" width=512 height=512>
-   </canvas>
-   <div>
-    <input id="result" readonly>
+    <div class="ui">
+    <button id="ctrl" class="startBtn" onclick="StartBtnClick()">START</button>
+    <br>
+    <canvas id="canvas" width=512 height=64>
+    </canvas>
+    <br>
+    <input id="result" class="result" readonly>
+    <br>
+    Target player in selection?
+    <br>
+    <button onclick="Y()" id="yes">YES</button>
+    <button onclick="N()" id="no">NO</button>
    </div>
-   <div class="center2">
-    选中的玩家中是否有目标玩家
-    <ul class="choose">
-     <li>
-      <button onclick="Y()" id="yes">有</button>
-     </li>
-     <li>
-      <button onclick="N()" id="no">无</button>
-     </li>
-    </ul>
+   <div class="description">
+    <h3>How to use：</h3>
+    Copy the command displays in the text area upside, and paste it to game to execute it.<br>
+    If your target player's name is in those names returned by the command, click the "Yes" button.<br>
+    If not, click the "No" button.<br><br>
+    If there is a customized demand, the value in the input box at the top of the page can be changed.<br>
+    A changed value won't be applied in the current process. 
     
+    <h3>How it works: </h3>
+    This program gets the players in particular area by target selectors.<br>
+    
+    <h3>Notes: </h3>
+    1. This program only avaliable in servers that allows cheat, that is, the "Allow Cheats" in settings must be switched on.<br>
+       If it is off, the command will return an error.<br>
+    2. The coordinates this program provides is NOT 100% accurate.<br>
    </div>
   </div>
-
-  <div class="fuzzySearch">
-   <p>该功能暂未开放</p>
-  </div>
-
-  <div class="settings">
-   <p>初始查找顶点:(重置后生效)</p>
-   <input type="number" class="text1" id="initValue" value="100000" onchange="changeInitValue()">
-  </div>
-
-  <div class="about" style="text-align:center">
-   <h1>玩家查找器v0.5</h1>
-   <h2>HTMG 制作</h2>
-   <p>原理：使用选择器和选择器参数估计玩家大致位置</p>
-   <p>
-    本模块仅能提供大致范围，非准确坐标
-    <br>
-    参考数值(内切圆半径)：
-    <br>
-    4级地图：512
-    <br>
-    本模块查找精确度在半径低于512时大幅下降
-   </p>
   </div>
 
 <script>
@@ -172,19 +180,26 @@
   QUADRANT1 - QUADRANT4  象限查找
   DETAIL1  细分:左半
   DETAIL2  细分:下半
+  CONFIRM  确认玩家是否存在
 */
 </script>
   
 <script>
+/* 常量 */
+const RadiusTooSmallText = '当前半径貌似已经足够小了。\n再往下误差就会变大了qwq\n可以换用其他查找算法进行精细查找awa';
+const PlayerNotFound1    = 'Oops! 玩家似乎消失了。\n可能他离开了你所在的维度。\n复位重新查找试试？\n可以把初值设为玩家消失之前的圆心半径减少耗时哦 :D';
+const PlayerNotFound2    = 'Oops! 玩家似乎消失了。\n可能他不在你所在的维度。\n复位重新查找试试？';
+const PosSyntaxError     = '坐标输入可能错了qwq';
 /* 数据存储变量 */
-var Cmd = [ '/w @s @a[', ']' ],
-    CORNER = [ 0, 0, 0 ],
-    DELTA = [ 0, 0, 0 ],
-    Step = 0,
-    State = 'STANDBY',
-    Initial = 100000,
-    Active = false;
-
+var step    = 0,
+    state   = 'STANDBY',
+    range   = 100000,
+    initRange = 100000,
+    pos     = [ 0, -64, 0 ],
+    initPos = [ 0, -64, 0 ],
+    delta   = [ 0,   0, 0 ],
+    active  = false;
+    
 /* 功能性变量 */
 var Anim = window.requestAnimationFrame ||
            window.webkitRequestAnimationFrame ||
@@ -195,224 +210,131 @@ var Anim = window.requestAnimationFrame ||
              window.setTimeout(callback, 1000 / 60);
            };
 var Out = document.getElementById('result');
-var C = document.getElementById("canvas");
+var C   = document.getElementById("canvas");
 var CTX = C.getContext('2d');
 
-$(document).ready(() => {
-  $('.binarySearch').show();
-  $('.fuzzySearch').hide();
-  $('.settings').hide();
-  $('.about').hide();
-
-  $('#_1').click(() => {
-    $('.binarySearch').show();
-    $('.fuzzySearch').hide();
-    $('.settings').hide();
-    $('.about').hide();
-
-    $('#_1').addClass('active');
-    $('#_2,#_3,#_4').removeClass('active');
-  });
-
-  $('#_2').click(() => {
-    $('.binarySearch').hide();
-    $('.fuzzySearch').show();
-    $('.settings').hide();
-    $('.about').hide();
-
-    $('#_2').addClass('active');
-    $('#_1,#_3,#_4').removeClass('active');
-  });
-
-  $('#_3').click(() => {
-    $('.binarySearch').hide();
-    $('.fuzzySearch').hide();
-    $('.settings').show();
-    $('.about').hide();
-
-    $('#_3').addClass('active');
-    $('#_1,#_2,#_4').removeClass('active');
-  });
-
-  $('#_4').click(() => {
-    $('.binarySearch').hide();
-    $('.fuzzySearch').hide();
-    $('.settings').hide();
-    $('.about').show();
-
-    $('#_4').addClass('active');
-    $('#_1,#_2,#_3').removeClass('active');
-  });
-
-  $('#ctrl').click(() => {
-    if(State == 'STANDBY'){
-      State = 'QUADRANT1';
-	     DELTA = [ Initial, 512, Initial ];
-
-	     $('#ctrl').html('双击复位');
-
-      ctrl.style.backgroundColor = "#ffd094";
-      ctrl.style.borderColor = "#fce091 #c1a072 #c1a072 #fce091";
-
-      Update();
-    } else {
-      if(!Active){
-        Active = true;
-        setTimeout(()=>{Active = false;}, 200);
-      } else {
-        Out.value = '复制指令到聊天框';
-        State = 'STANDBY';
-        CORNER = [ 0, 0, 0 ];
-        DELTA = [ 0, 0, 0 ];
-        Step = 0;
-
-        $('#ctrl').html('开始');
-
-        ctrl.style.backgroundColor = "#f3ff94";
-        ctrl.style.borderColor = "#f0fc91 #c1a072 #c1a072 #f0fc91";
-
-        Update();
-      }
-    }
-  });
-});
-
-function getWindowSize(){
-  var winWidth, winHeight;
-
-  if(window.innerWidth){
-    winWidth = window.innerWidth;
-  }else if((document.body) && (document.body.clientWidth)){
-    winWidth = document.body.clientWidth;
+function changeInitPos(){
+  let initPosObj = document.getElementById('initPos');
+  let str = initPosObj.value;
+  str = str.replace(/\s/g, '').match(/\([0-9]+\,[0-9]+\)/);
+  if(str){
+    let _pos = str[0].match(/[0-9]+/g);
+    initPos = [ Number(_pos[0]), -64, Number(_pos[1]) ];
+  } else {
+    alert(PosSyntaxError);
   }
-    
-  if(window.innerHeight){
-    winHeight = window.innerHeight;
-  }else if((document.body) && (document.body.clientHeight)){
-    winHeight = document.body.clientHeight;
-  }
-  
-  if(document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth){
-    winHeight = document.documentElement.clientHeight;
-    winWidth = document.documentElement.clientWidth;
-  }
-  
-  return [winWidth, winHeight];
 }
 
-function changeInitValue(){
-  var n = document.getElementById('initValue').value;
-  Initial = Number(n);
+function changeInitRange(){
+  let initRangeObj = document.getElementById('initRange');
+  let str = initRangeObj.value;
+  if(!isNaN(Number(str))){
+    initRange = Number(str);
+  } else {
+    alert(PosSyntaxError);
+  }
+}
+
+function StartBtnClick(){
+  if(state == 'STANDBY'){
+    init();
+  } else {
+    if(!active){
+      active = true;
+      setTimeout(()=>{active = false;}, 200);
+    } else {
+      reset();
+    }
+  }
 }
 
 Anim(draw);
 function draw(){
-  
-
   var __SIZE__ = getWindowSize();
     
-  C.width = __SIZE__[0] * 4;
-  C.height = __SIZE__[0] * 4 * 0.75;
+  //C.width = __SIZE__[0] * 4;
+  //C.height = __SIZE__[0] * 4 * 0.2;
 
   CTX.clearRect(0, 0, C.width, C.height);
-
-  CTX.font = Math.floor(C.height / 30) + 'px sans-serif';
-  CTX.fontSize = Math.floor(C.height / 30);
-  CTX.fillText("步数: " + Step, 0, CTX.fontSize);
-  CTX.fillText("状态: " + State, 0, CTX.fontSize * 2);
-  var centerX = CORNER[0] + DELTA[0] / 2;
-  var centerZ = CORNER[2] + DELTA[2] / 2;
-  var r = Math.sqrt( DELTA[0] * DELTA[0] + DELTA[2] * DELTA[2] ) / 2;
-  r = Math.round(r * 1000) / 1000;
-  CTX.fillText('预计目标坐标(圆心): ' + centerX + ',' + centerZ, 0, CTX.fontSize * 3);
-  CTX.fillText('坐标误差范围(半径): ' + r, 0, CTX.fontSize * 4);
-
+  
   Anim(draw);
 }
 
-function Update(){
+function init(){
+  document.getElementById('ctrl').innerHTML = 'Dbl click to reset';
+  state = 'X-';
   
-  if(State != 'STANDBY'){
-    Out.value = CMD('CORNER', [ CORNER[0], CORNER[1],
-      CORNER[2], DELTA[0],
-      DELTA[1], DELTA[2]
-    ]);
-  }
-}
-
-function Y(){
-  switch(State){
-    case 'QUADRANT1':
-	     DELTA[0] = Math.floor(DELTA[0] / 2);
-	     State = 'DETAIL1';
-	     break;
-    case 'QUADRANT2':
-	     DELTA[0] = Math.floor(DELTA[0] / 2);
-	     State = 'DETAIL1';
-	     break;
-    case 'QUADRANT3':
-	     DELTA[0] = Math.floor(DELTA[0] / 2);
-	     State = 'DETAIL1';
-	     break;
-    case 'QUADRANT4':
-	     DELTA[0] = Math.floor(DELTA[0] / 2);
-	     State = 'DETAIL1';
-	     break;
-    case 'DETAIL1':
-      DELTA[2] = Math.floor(DELTA[2] / 2);
-	     State = 'DETAIL2';
-	     break;
-    case 'DETAIL2':
-      DELTA[0]  = Math.floor(DELTA[0] / 2);
-	     State = 'DETAIL1';
-	     break;
-  }
+  range = initRange;
+  delta = [ range, 1000, range ];
+  pos   = [ initPos[0] - range / 2, -64, initPos[2] - range / 2 ];
   
-  if(State != 'STANDBY')Step++;
-
-  Update();
-}
-
-function N(){
-  switch(State){
-    case 'QUADRANT1':
-      DELTA = [ -Initial, 512, Initial ];
-	     State = 'QUADRANT2';
-      break;
-    case 'QUADRANT2':
-      DELTA = [ -Initial, 512, -Initial ];
-      State = 'QUADRANT3';
-      break;
-    case 'QUADRANT3':
-  	   DELTA = [ Initial, 512, -Initial ];
-	     State = 'QUADRANT4';
-	     break;
-    case 'QUADRANT4':
-	     State = 'ERROR_NO_PLAYER_FOUND';
-	     break;
-	   case 'DETAIL1':
-      CORNER[0] += DELTA[0];
-	     DELTA[2] = Math.floor(DELTA[2] / 2);
-	     State = 'DETAIL2';
-	     break;
-	   case 'DETAIL2':
-	     CORNER[2] += DELTA[2];
-	     DELTA[0] = Math.floor(DELTA[0] / 2);
-	     State = 'DETAIL1';
-	     break;
-  }
+  document.getElementById('initPos').readOnly = true;
+  document.getElementById('initRange').readOnly = true;
   
-  if(State != 'STANDBY')Step++;
-
-  Update();
+  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
 }
 
 function reset(){
+  document.getElementById('ctrl').innerHTML = 'START';
+  state = 'STANDBY';
   
+  document.getElementById('initPos').readOnly = false;
+  document.getElementById('initRange').readOnly = false;
+}
+
+function Y(){
+  let dR;
+
+  switch(state){
+    case 'X-':
+      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
+      if(delta[0] - dR > 0){
+        delta[0] -= dR;
+      } else {
+        state = 'Z-';
+      }
+      break;
+    case 'Z-':
+      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
+      if(delta[2] - dR > 0){
+        delta[2] -= dR;
+      } else {
+        state = 'X-';
+        range /= 10;
+      }
+      break;
+  }
+  
+  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
+}
+
+function N(){
+  switch(state){
+    case 'X-':
+      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
+      
+      pos[0] += delta[0];
+      delta[0] = dR;
+      state = 'Z-';
+      break;
+    case 'Z-':
+      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
+      
+      pos[2] += delta[2];
+      delta[2] = dR;
+      
+      range /= 10;
+      
+      state = 'X-';
+      break;
+  }
+  
+  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
 }
 
 function CMD(type, param){
   var r;
+  const Cmd = [ '/w @s @a[', ']' ];
   switch(type){
     case 'CENTER':
       r = Cmd[0] + 'x=' + param[0]
