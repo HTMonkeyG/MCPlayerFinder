@@ -11,18 +11,18 @@
   <meta charset="utf-8">
   <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <style>
-   .binarySearch{
+   .binarySearch {
      text-align: center;
      border-style: solid;
      border-width: 0px;
      border-color: #000000
    }
 
-   .center2{
+   .center2 {
 	    height: 75px;
    }
 
-   #ctrl{
+   #ctrl {
      display: block;
      width: 100%;
 	    height: 50px;
@@ -31,7 +31,11 @@
      border-color: #f0fc91 #c1a072 #c1a072 #f0fc91;
    }
 
-   #result{
+   canvas {
+     width: 100%;
+   }
+
+   #result {
      width: 100%;
      height: 50px;
      background-color: #f7ffb9;
@@ -41,7 +45,7 @@
      text-align: center;
    }
 
-   .text1{
+   .text1 {
      width: 100%;
      height: 20px;
      background-color: #f7ffb9;
@@ -53,7 +57,7 @@
      margin: 0px 0px 10px 0px;
    }
 
-   input{
+   input {
      -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
      box-sizing: border-box;
@@ -118,13 +122,8 @@
   <div class="binarySearch">
    <button onclick="start()" id="ctrl">开始</button>
    <br>
-   <input type="text" class="text1" id="state" readonly>
-   <br>
-   <input type="text" id="step" class="text1" readonly>
-   <br>
-   <input type="text" id="pos" class="text1" readonly>
-   <br>
-   <input type="text" id="radius" class="text1" readonly>
+   <canvas id="canvas" width=512 height=512>
+   </canvas>
    <div>
     <input id="result" readonly>
    </div>
@@ -152,7 +151,7 @@
   </div>
 
   <div class="about" style="text-align:center">
-   <h1>玩家查找器v0.4</h1>
+   <h1>玩家查找器v0.5</h1>
    <h2>HTMG 制作</h2>
    <p>原理：使用选择器和选择器参数估计玩家大致位置</p>
    <p>
@@ -187,11 +186,17 @@ var Cmd = [ '/w @s @a[', ']' ],
     Active = false;
 
 /* 功能性变量 */
+var Anim = window.requestAnimationFrame ||
+           window.webkitRequestAnimationFrame ||
+           window.mozRequestAnimationFrame ||
+           window.oRequestAnimationFrame ||
+           window.msRequestAnimationFrame ||
+           function (callback) {
+             window.setTimeout(callback, 1000 / 60);
+           };
 var Out = document.getElementById('result');
-var state = document.getElementById("state");
-var step = document.getElementById("step");
-var pos = document.getElementById("pos");
-var radius = document.getElementById("radius");
+var C = document.getElementById("canvas");
+var CTX = C.getContext('2d');
 
 $(document).ready(() => {
   $('.binarySearch').show();
@@ -272,28 +277,66 @@ $(document).ready(() => {
   });
 });
 
+function getWindowSize(){
+  var winWidth, winHeight;
+
+  if(window.innerWidth){
+    winWidth = window.innerWidth;
+  }else if((document.body) && (document.body.clientWidth)){
+    winWidth = document.body.clientWidth;
+  }
+    
+  if(window.innerHeight){
+    winHeight = window.innerHeight;
+  }else if((document.body) && (document.body.clientHeight)){
+    winHeight = document.body.clientHeight;
+  }
+  
+  if(document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth){
+    winHeight = document.documentElement.clientHeight;
+    winWidth = document.documentElement.clientWidth;
+  }
+  
+  return [winWidth, winHeight];
+}
+
 function changeInitValue(){
   var n = document.getElementById('initValue').value;
   Initial = Number(n);
 }
 
+Anim(draw);
+function draw(){
+  
+
+  var __SIZE__ = getWindowSize();
+    
+  C.width = __SIZE__[0] * 4;
+  C.height = __SIZE__[0] * 4 * 0.75;
+
+  CTX.clearRect(0, 0, C.width, C.height);
+
+  CTX.font = Math.floor(C.height / 30) + 'px sans-serif';
+  CTX.fontSize = Math.floor(C.height / 30);
+  CTX.fillText("步数: " + Step, 0, CTX.fontSize);
+  CTX.fillText("状态: " + State, 0, CTX.fontSize * 2);
+  var centerX = CORNER[0] + DELTA[0] / 2;
+  var centerZ = CORNER[2] + DELTA[2] / 2;
+  var r = Math.sqrt( DELTA[0] * DELTA[0] + DELTA[2] * DELTA[2] ) / 2;
+  r = Math.round(r * 1000) / 1000;
+  CTX.fillText('预计目标坐标(圆心): ' + centerX + ',' + centerZ, 0, CTX.fontSize * 3);
+  CTX.fillText('坐标误差范围(半径): ' + r, 0, CTX.fontSize * 4);
+
+  Anim(draw);
+}
+
 function Update(){
-  step.value = "步数: " + Step;
-  state.value = "状态: " + State;
   
   if(State != 'STANDBY'){
     Out.value = CMD('CORNER', [ CORNER[0], CORNER[1],
       CORNER[2], DELTA[0],
       DELTA[1], DELTA[2]
     ]);
-
-    var centerX = CORNER[0] + DELTA[0] / 2;
-    var centerZ = CORNER[2] + DELTA[2] / 2;
-    var r = Math.sqrt( DELTA[0] * DELTA[0] + DELTA[2] * DELTA[2] ) / 2;
-    r = Math.round(r * 1000) / 1000;
-
-    pos.value = '预计目标坐标(圆心): ' + centerX + ',' + centerZ;
-    radius.value = '坐标误差范围(半径): ' + r;
   }
 }
 
