@@ -2,8 +2,7 @@
 <html>
  <head>
   <meta name="viewport" 
-   content="width=device-width, 
-   initial-scale=1.0,
+   content="width=device-width,
    maximum-scale=1.0">
   <title>MCPF v0.9</title>
   <meta charset="utf-8">
@@ -47,7 +46,6 @@
     background-size: 256px;
     background-repeat: repeat;
     display: block;
-    height: 100%;
   }
   
   .main {
@@ -112,7 +110,6 @@
     border-width: 1px;
     border-color: rgb(170,197,222);
     text-align: center;
-    font-size: 1.2em;
   }
   
   .header {
@@ -123,15 +120,11 @@
  </head>
 
  <body>
- <aside style="width:5%">
-   <div>aaa</div>
-  </aside>
  <div class="header">
   <h1 style="width:100%">MCPlayerFinder v0.9</h1>
   <h2 style="width:100%">Made by HTMonkeyG</h2>
  </div>
  <div class="main">
-  
   <div class="main-content">
    <div class="settings">
     <label for="initValue" class="label1">Initial Range:</label>
@@ -194,7 +187,6 @@ const PosSyntaxError     = '坐标输入可能错了qwq';
 var step    = 0,
     state   = 'STANDBY',
     range   = 100000,
-    initRange = 100000,
     pos     = [ 0, -64, 0 ],
     initPos = [ 0, -64, 0 ],
     delta   = [ 0,   0, 0 ],
@@ -229,7 +221,7 @@ function changeInitRange(){
   let initRangeObj = document.getElementById('initRange');
   let str = initRangeObj.value;
   if(!isNaN(Number(str))){
-    initRange = Number(str);
+    range = Number(str);
   } else {
     alert(PosSyntaxError);
   }
@@ -264,14 +256,13 @@ function init(){
   document.getElementById('ctrl').innerHTML = 'Dbl click to reset';
   state = 'X-';
   
-  range = initRange;
   delta = [ range, 1000, range ];
   pos   = [ initPos[0] - range / 2, -64, initPos[2] - range / 2 ];
   
   document.getElementById('initPos').readOnly = true;
   document.getElementById('initRange').readOnly = true;
   
-  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
+  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ])
 }
 
 function reset(){
@@ -283,53 +274,15 @@ function reset(){
 }
 
 function Y(){
-  let dR;
-
   switch(state){
     case 'X-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      if(delta[0] - dR > 0){
-        delta[0] -= dR;
-      } else {
-        state = 'Z-';
-      }
-      break;
-    case 'Z-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      if(delta[2] - dR > 0){
-        delta[2] -= dR;
-      } else {
-        state = 'X-';
-        range /= 10;
-      }
+      if(pos[0])
       break;
   }
-  
-  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
 }
 
 function N(){
-  switch(state){
-    case 'X-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      
-      pos[0] += delta[0];
-      delta[0] = dR;
-      state = 'Z-';
-      break;
-    case 'Z-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      
-      pos[2] += delta[2];
-      delta[2] = dR;
-      
-      range /= 10;
-      
-      state = 'X-';
-      break;
-  }
   
-  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
 }
 
 function CMD(type, param){
