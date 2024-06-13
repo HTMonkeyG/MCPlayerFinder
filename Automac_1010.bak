@@ -1,0 +1,71 @@
+let wkObj1010 = {
+  run: false,
+  Aa: (x,b)=>{
+    return Math.pow(b,Math.ceil(Math.log(x)/Math.log(b)));
+  },
+  Ab: ()=>{
+    if(this.dr < 1){
+      this.run = false;
+      this.errHandler(1);
+      return;
+    }
+    this.cmdHandler(this);
+  },
+  init: (x,z,r)=>{
+    alert(this.Aa)
+    r = this.Aa(r,10);
+    this.x = x - r;
+    this.z = z - r;
+    this.dx = 2 * r;
+    this.dz = 2 * r;
+    this.state = 1;
+    this.dr = r;
+    this.run = true;
+  },
+  rst: ()=>{
+    this.state = 0;
+    this.run = false;
+  },
+  errHandler: ()=>{},
+  cmdHandler: ()=>{},
+  Ba: ()=>{
+    if(!this.state)return;
+    if(!this.run)return;
+    if(this.state == 1){
+      if(this.dx - this.dr > 0){
+        this.dx -= this.dr;
+      } else {
+        this.x += this.dx;
+        this.dx = this.dr;
+        this.state = 2;
+      }
+    }
+    if(this.state == 2){
+      if(this.dz - this.dr > 0){
+        this.dz -= this.dr;
+      } else {
+        this.z += this.dx;
+        this.dz = this.dr;
+        this.dr /= 10;
+        this.state = 1;
+      }
+    }
+    this.Ab();
+  },
+  Bb: ()=>{
+    if(!this.state)return;
+    if(!this.run)return;
+    if(this.state == 1){
+      this.x += this.dx;
+      this.dx = this.dr;
+      this.state = 2;
+    }
+    if(this.state == 2){
+      this.z += this.dx;
+      this.dz = this.dr;
+      this.dr /= 10;
+      this.state = 1;
+    }
+    this.Ab();
+  }
+};

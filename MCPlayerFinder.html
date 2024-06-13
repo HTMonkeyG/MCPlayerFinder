@@ -3,34 +3,12 @@
  <head>
   <meta name="viewport" 
    content="width=device-width, 
-   initial-scale=1.0,
-   maximum-scale=1.0">
-  <title>MCPF v0.9</title>
+   initial-scale=1.0, 
+   maximum-scale=1.0,
+   minimum-scale=1.0, 
+   user-scalable=no">
+  <title>MCPF v1.0</title>
   <meta charset="utf-8">
-  <script>
-  function getWindowSize(){
-    var winWidth, winHeight;
-
-    if(window.innerWidth){
-      winWidth = window.innerWidth;
-    }else if((document.body) && (document.body.clientWidth)){
-      winWidth = document.body.clientWidth;
-    }
-    
-    if(window.innerHeight){
-      winHeight = window.innerHeight;
-    }else if((document.body) && (document.body.clientHeight)){
-      winHeight = document.body.clientHeight;
-    }
-  
-    if(document.documentElement && document.documentElement.clientHeight && document.documentElement.clientWidth){
-      winHeight = document.documentElement.clientHeight;
-      winWidth = document.documentElement.clientWidth;
-    }
-  
-    return [winWidth, winHeight];
-  }
-  </script>
   <style>
   input{
     outline: none;
@@ -38,9 +16,9 @@
   
   body {
     text-align: center;
-    background-color: #A7CAF0;
+    background-color: rgb(51,43,40);
     background-image: url('./MCPF_bg.png');
-    background-size: 256px;
+    background-size: 128px;
     background-repeat: repeat;
     display: block;
     height: 100%;
@@ -54,22 +32,33 @@
   
   .main {
     display: block;
-    min-width: 400px;
-    max-width: 1000px;
     width: 100%;
-    margin: 70px;
     margin-left: auto;
     margin-right: auto;
     text-align: center;
-    background-color: rgba(194,238,254,0.5);
-    border-radius: 20px;
+    background-color: rgba(152,75,67,0.02);
+    border-style: solid;
+    border-width: 1;
+    border-color: rgba(152,75,67,0.7);
     font-size: 90%;
+    color: white;
+    box-shadow:0 0 8px rgba(152,75,67,.5);
+    -moz-box-shadow:0 0 8px rgba(152,75,67,.5);
+    -webkit-box-shadow:0 0 8px rgba(152,75,67,3);
   }
   
   .main-content {
     display: block;
     margin: 20px 20px 20px 20px;
     padding: 10px 0px 0px 0px;
+  }
+
+  .content {
+    min-width: 350px;
+    max-width: 1000px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .description {
@@ -80,205 +69,230 @@
   .settings {
     padding: 10px;
     text-align: left;
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgb(170,197,222)
   }
   
-  .ui {
-    padding: 10px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgb(170,197,222)
-  }
+  .ui {padding: 10px;}
   
   .label1 {
     display: inline-block;
     width: 40%;
   }
+
+  .textBox1 {
+    width: 55%;
+    background-color: rgba(80,146,32,0.2);
+    border-style: solid;
+    border-color: rgba(255,255,255,0.3);
+    border-width: 2px;
+    color: white;
+    transition: background-color 0.6s;
+    -webkit-transition: background-color 0.6s;
+  }
+  
+  .dsblTextBox1 {
+    background-color: rgba(152,75,67,0.2);
+    transition: background-color 0.6s;
+    -webkit-transition: background-color 0.6s;
+  }
   
   .startBtn {
-    width: 50%;
+    width: 75%;
     height: 35px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(193,136,94,0.85);
+    background-color: rgba(80,146,32,0.1);
+    color: white;
   }
+  
+  .startBtn:hover{background: rgba(80,146,32,0.3);}
+  
+  .startBtn:active{background: rgba(80,146,32,0.2);}
   
   .result {
     width: 75%;
     height: 30px;
-    background-color: rgba(255,255,255,0.1);
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgb(170,197,222);
+    background-color: rgba(80,146,32,0.1);
     text-align: center;
     font-size: 1.2em;
+    color: white;
   }
   
   .header {
-    width: 400px;
+    width: 100%;
     margin: 0px auto auto auto;
-  }
-  
-  ul.sidenav {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    background-color: #f1f1f1;
-    position: fixed;
-    height: 100%;
-    overflow: auto;
-    opacity: 0.35;
-  }
-  
-  ul.sidenav:hover {
-    opacity: 1.0;
+    height: 100px;
+    position: relative;
   }
 
-  ul.sidenav li a {
-    display: block;
-    color: #000;
-    padding: 8px 16px;
-    text-decoration: none;
+  .insideBorder1 {
+    border-style: solid;
+    border-width: 1px;
+    background-color: rgba(193,136,94,0.05);
+    border-color: rgba(193,136,94,0.85);
+    box-shadow:0 0 8px rgba(193,136,94,.5);
+    -moz-box-shadow:0 0 8px rgba(193,136,94,.5);
+    -webkit-box-shadow:0 0 8px rgba(193,136,94,.5);
   }
- 
-  ul.sidenav li a.active {
-    background-color: #4CAF50;
-    color: white;
+  
+  .logo {
+    width: 400px;
+    position: relative;
+    top: 40px;
+  }
+  
+  .logoBox {
+    position: relative;
   }
 
-  ul.sidenav li a:hover:not(.active) {
-    background-color: #555;
+  .oprBox {
+  }
+  
+  .oprBtn {
+    width: 40%;
+    height: 35px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(193,136,94,0.85);
+    background-color: rgba(193,136,94,0.1);
     color: white;
   }
   
-  @media screen and (max-width: 900px) {
-    ul.sidenav {
-        width: 100%;
-        height: auto;
-        position: relative;
-    }
-    ul.sidenav li a {
-        float: left;
-        padding: 15px;
-    }
+  .oprBtn:hover{background: rgba(193,136,94,0.3);}
+  
+  .oprBtn:active{background: rgba(193,136,94,0.2);}
+  
+  @media screen and (max-width: 1010px) {
     div.content {margin-left: 0;}
+    .main {width: 95%;}
+    .logo {
+      width: 350px;
+      top: 40px;
+      position: relative;
+    }
   }
 
   @media screen and (max-width: 400px) {
-    ul.sidenav li a {
-        text-align: center;
-        float: none;
+    .main {width: 90%;}
+    .logo {
+      width: 250px;
+      top: 40px;
+      position: relative;
     }
+  }
+  
+  ::selection{
+    background-color:rgba(193,136,94,0.75);color:#000;
+  }
+  ::-webkit-selection{
+    background-color:rgba(193,136,94,0.75);color:#000;
+  }
+  ::-moz-selection{
+    background-color:rgba(193,136,94,0.75);color:#000;
   }
   </style>
  </head>
 
  <body>
- <ul class="sidenav">
-  <li><a class="active" href="#about">关于本页</a></li>
-  <li><a href="#boxS">缩盒查找</a></li>
-  <li><a href="#binS">二分查找</a></li>
-  <li><a href="#lineS">寻线查找</a></li>
-  <li><a href="#setting">设置</a></li>
- </ul>
  
  <div class="content">
  <div class="header">
-  <h1 style="width:100%;margin:0">MCPlayerFinder v0.9</h1>
-  <h2 style="width:100%">Made by HTMonkeyG</h2>
+   <img class="logo" src="./MCPF-logo.png"></img>
  </div>
  <div class="main">
-  
   <div class="main-content">
-   <div class="settings">
-    <label for="initValue" class="label1">Initial Range:</label>
-    <input type="text" class="text1" id="initRange" name="initValue" value="100000" onchange="changeInitRange()">
+   <div class="settings insideBorder1">
+    <label for="initRange" class="label1">初始范围</label>
+    <input type="text" class="textBox1" id="initRange" value="100000">
     <br>
-    <label for="initPos"  class="label1">Initial center pos:</label>
-    <input type="text" class="text1" id="initPos" name="initPos" value="(0,0)" onchange="changeInitPos()">
+    <label for="initPos"  class="label1">初始中心</label>
+    <input type="text" class="textBox1" id="initPos" value="(0,0)">
    </div>
    <br>
-    <div class="ui">
-    <button id="ctrl" class="startBtn" onclick="StartBtnClick()">START</button>
+    <div class="ui insideBorder1">
+    <button id="ctrl" class="startBtn" onclick="startBtnClick()">START</button>
     <br>
-    <canvas id="canvas" width=512 height=64>
+    <canvas id="canvas" width=200 height=25>
     </canvas>
     <br>
-    <input id="result" class="result" readonly>
+    状态: <input id="stateDisp" class="result insideBorder1" style="width: 40px;" readonly>
+    <br><br>
+    <input id="estiDisp" class="result insideBorder1" style="width:50%;" readonly>
+    <br><br>
+    <input id="result" class="result insideBorder1" readonly>
     <br>
-    Target player in selection?
+    <span style="display:block;margin-top:5px">目标玩家是否在回传列表中:</span>
     <br>
-    <button onclick="Y()" id="yes">YES</button>
-    <button onclick="N()" id="no">NO</button>
+    <div class="oprBox">
+     <button onclick="Y()" id="yes" class="oprBtn">YES</button>
+     <button onclick="N()" id="no" class="oprBtn">NO</button>
+    </div>
    </div>
    <div class="description">
-    <h3>How to use：</h3>
-    Copy the command displays in the text area upside, and paste it to game to execute it.<br>
-    If your target player's name is in those names returned by the command, click the "Yes" button.<br>
-    If not, click the "No" button.<br><br>
-    If there is a customized demand, the value in the input box at the top of the page can be changed.<br>
-    A changed value won't be applied in the current process. 
-    
-    <h3>How it works: </h3>
-    This program gets the players in particular area by target selectors.<br>
-    
-    <h3>Notes: </h3>
-    1. This program only avaliable in servers that allows cheat, that is, the "Allow Cheats" in settings must be switched on.<br>
-       If it is off, the command will return an error.<br>
-    2. The coordinates this program provides is NOT 100% accurate.<br>
+    <h2>使用方法：</h2>
+    <h3>一、准备工作</h3>
+    <p><span style="font-weight:bold">本工具仅适用于基岩版。</span>使用前先检查你的服务器是否打开了“允许作弊”选项。若未打开则无法使用本工具，执行指令后会显示<span style="color:#ff5555">选择器扩展权限不足</span>。</p>
+    <h3>二、确定初值</h3>
+    <p>可以通过r=选择器来估计目标的大致范围。若估计过程中遇到困难，也可直接将范围设为最大值30000000。需注意，输入初值时需严格按照格式输入。</p>
+    <h3>三、开始查找</h3>
+    <p>点按“开始”按钮即可开始查找。可以通过双击指令显示框快捷复制指令。将指令直接复制至游戏内聊天栏执行，并根据指令回传结果选择“是”或“否”。重复上述操作，直到显示的“坐标误差”降至±500左右，即可停止查找。±500m精度已可用于定位。</p>
    </div>
   </div>
   </div>
   </div>
-
+<script src="./Automac_1010_min.js"></script>
 <script>
-/*
-  1 状态及其含义列表
-  STANDBY  待命
-  QUADRANT1 - QUADRANT4  象限查找
-  DETAIL1  细分:左半
-  DETAIL2  细分:下半
-  CONFIRM  确认玩家是否存在
-*/
-</script>
-  
-<script>
-/* 常量 */
-const RadiusTooSmallText = '当前半径貌似已经足够小了。\n再往下误差就会变大了qwq\n可以换用其他查找算法进行精细查找awa';
+const RadiusTooSmall     = '当前半径已经足够小了，\n再往下误差就会变大了qwq，\n建议转用游戏内方法进行更精确定位。';
 const PlayerNotFound1    = 'Oops! 玩家似乎消失了。\n可能他离开了你所在的维度。\n复位重新查找试试？\n可以把初值设为玩家消失之前的圆心半径减少耗时哦 :D';
 const PlayerNotFound2    = 'Oops! 玩家似乎消失了。\n可能他不在你所在的维度。\n复位重新查找试试？';
-const PosSyntaxError     = '坐标输入可能错了qwq';
+const PosSyntaxError     = '坐标和范围格式似乎错了qwq';
 /* 数据存储变量 */
 var step    = 0,
-    state   = 'STANDBY',
-    range   = 100000,
-    initRange = 100000,
-    pos     = [ 0, -64, 0 ],
-    initPos = [ 0, -64, 0 ],
-    delta   = [ 0,   0, 0 ],
+    workObj = wkObj1010,
+    elderWObj = workObj,
     active  = false;
-    
-/* 功能性变量 */
-var Anim = window.requestAnimationFrame ||
-           window.webkitRequestAnimationFrame ||
-           window.mozRequestAnimationFrame ||
-           window.oRequestAnimationFrame ||
-           window.msRequestAnimationFrame ||
-           function (callback) {
-             window.setTimeout(callback, 1000 / 60);
-           };
+
 var Out = document.getElementById('result');
 var C   = document.getElementById("canvas");
 var CTX = C.getContext('2d');
 
+workObj.cmdHandler = function(x){
+  Out.value = genCmd(x.x,x.z,x.dx+x.x,x.dz+x.z);
+  document.getElementById("estiDisp").value = `预计目标坐标：(${elderWObj.x+elderWObj.dx/2},${elderWObj.z+elderWObj.dz/2})；目标范围：±${Math.max(elderWObj.dx/2,elderWObj.dx/2)}`;
+  if(Math.max(x.dx / 2, x.dx / 2) <= 400)alert(RadiusTooSmall);
+};
+
+workObj.errHandler = function(a){
+  if(a == 2){
+    alert(PlayerNotFound1);
+  }
+};
+
+document.getElementById("result").onclick = function(e){
+  if(!workObj.run)return;
+  if(this.active){
+    this.select();
+    document.execCommand('Copy');
+  }else{
+    this.active = true;
+    let a = this;
+    window.setTimeout(function(){
+      a.active = false
+    }, 200);
+  }
+};
+
+
 function changeInitPos(){
   let initPosObj = document.getElementById('initPos');
   let str = initPosObj.value;
-  str = str.replace(/\s/g, '').match(/\([0-9]+\,[0-9]+\)/);
+  str = str.replace(/\s/g, '').match(/^(\([0-9]+\,[0-9]+\))$/);
   if(str){
     let _pos = str[0].match(/[0-9]+/g);
-    initPos = [ Number(_pos[0]), -64, Number(_pos[1]) ];
+    return [ Number(_pos[0]), Number(_pos[1]) ];
   } else {
     alert(PosSyntaxError);
+    return !1;
   }
 }
 
@@ -286,14 +300,15 @@ function changeInitRange(){
   let initRangeObj = document.getElementById('initRange');
   let str = initRangeObj.value;
   if(!isNaN(Number(str))){
-    initRange = Number(str);
+    return Number(str);
   } else {
     alert(PosSyntaxError);
+    return !1;
   }
 }
 
-function StartBtnClick(){
-  if(state == 'STANDBY'){
+function startBtnClick(){
+  if(!workObj.run){
     init();
   } else {
     if(!active){
@@ -305,115 +320,65 @@ function StartBtnClick(){
   }
 }
 
-Anim(draw);
-function draw(){
-  var __SIZE__ = getWindowSize();
-    
-  //C.width = __SIZE__[0] * 4;
-  //C.height = __SIZE__[0] * 4 * 0.2;
-
-  CTX.clearRect(0, 0, C.width, C.height);
-  
-  Anim(draw);
-}
-
 function init(){
-  document.getElementById('ctrl').innerHTML = 'Dbl click to reset';
-  state = 'X-';
-  
-  range = initRange;
-  delta = [ range, 1000, range ];
-  pos   = [ initPos[0] - range / 2, -64, initPos[2] - range / 2 ];
-  
-  document.getElementById('initPos').readOnly = true;
-  document.getElementById('initRange').readOnly = true;
-  
-  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
+  let t1 = changeInitRange();
+  let t2 = changeInitPos();
+  if(t1 && t2){
+    document.getElementById('ctrl').innerHTML = '双击复位';
+    workObj.init(t2[0],t2[1],t1);
+    dsblValueInput();
+  }
 }
 
 function reset(){
-  document.getElementById('ctrl').innerHTML = 'START';
-  state = 'STANDBY';
+  document.getElementById('ctrl').innerHTML = '开始查找';
+  Out.value = "";
+  workObj.rst();
   
-  document.getElementById('initPos').readOnly = false;
-  document.getElementById('initRange').readOnly = false;
+  enblValueInput();
 }
 
 function Y(){
-  let dR;
-
-  switch(state){
-    case 'X-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      if(delta[0] - dR > 0){
-        delta[0] -= dR;
-      } else {
-        state = 'Z-';
-      }
-      break;
-    case 'Z-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      if(delta[2] - dR > 0){
-        delta[2] -= dR;
-      } else {
-        state = 'X-';
-        range /= 10;
-      }
-      break;
-  }
-  
-  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
+  elderWObj = workObj;
+  workObj.Ba();
 }
 
 function N(){
-  switch(state){
-    case 'X-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      
-      pos[0] += delta[0];
-      delta[0] = dR;
-      state = 'Z-';
-      break;
-    case 'Z-':
-      dR = Math.pow(10, Math.ceil(Math.log(range) / Math.log(10)) - 1);
-      
-      pos[2] += delta[2];
-      delta[2] = dR;
-      
-      range /= 10;
-      
-      state = 'X-';
-      break;
-  }
-  
-  Out.value = CMD('CORNER', [ pos[0], pos[1], pos[2], delta[0], delta[1], delta[2] ]);
+  elderWObj = workObj;
+  workObj.Bb();
 }
 
-function CMD(type, param){
-  var r;
-  const Cmd = [ '/w @s @a[', ']' ];
-  switch(type){
-    case 'CENTER':
-      r = Cmd[0] + 'x=' + param[0]
-                 + ',y=' + param[1]
-                 + ',z=' + param[2]
-                 + ',r=' + param[3]
-                 + Cmd[1];
-      break;
-    case 'CORNER':
-      r = Cmd[0] + 'x=' + param[0]
-                 + ',y=' + param[1]
-                 + ',z=' + param[2]
-                 + ',dx=' + param[3]
-                 + ',dy=' + param[4]
-                 + ',dz=' + param[5]
-                 + Cmd[1];
-      break;
-  }
+function genCmd(xl,zl,xr,zr){
+  let a = Math.min(xl,xr),
+      b = Math.max(xl,xr),
+      c = Math.min(zl,zr),
+      d = Math.max(zl,zr);
 
-  return r;
+  if(a==b || c==d)return !1;
+
+  return `/w @s @a[x=${a},y=-64,z=${c},dx=${b-a-1},dy=1024,dz=${d-c-1}]`;
+}
+
+function updCmd(){
+  Out.value = genCmd(workObj.a,
+                     workObj.b,
+                     workObj.c,
+                     workObj.d);
+}
+
+function enblValueInput(){
+  document.getElementById("initPos").readOnly = false;
+  document.getElementById("initRange").readOnly = false;
+   document.getElementById("initPos").classList.remove("dsblTextBox1");
+  document.getElementById("initRange").classList.remove("dsblTextBox1");
+}
+
+function dsblValueInput(){
+  document.getElementById("initPos").readOnly = true;
+  document.getElementById("initRange").readOnly = true;
+   document.getElementById("initPos").classList.add("dsblTextBox1");
+  document.getElementById("initRange").classList.add("dsblTextBox1");
 }
 </script>
-
 </body>
 </html>

@@ -1,0 +1,9 @@
+<script>
+window.addEventListener("message", (msg)=>{
+  alert(JSON.stringify(msg.data));
+});
+
+window.setTimeout(()=>{
+  window.postMessage({a:1});
+}, 1000);
+</script>
