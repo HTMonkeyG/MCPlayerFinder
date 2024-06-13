@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
  <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <meta name="viewport" 
+   content="width=device-width, 
+   initial-scale=1.0, 
+   maximum-scale=1.0,
+   minimum-scale=1.0, 
+   user-scalable=no">
   <title>通过选择器查找玩家</title>
   <meta charset="utf-8">
   <div class="center">
-   <h1>玩家查找器v0.1</h1>
+   <h1>玩家查找器v0.2</h1>
    <h3>猴某人(HTMG)制作</h3>
   </div>
-  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
   <style>
    .center{
      text-align: center;
    }
    .center2{
 	    height: 75px;
-   }
-   .center3{
-     text-align: center;
-	    width: 100%;
    }
    #pic{
      width: 100%;
@@ -32,7 +32,8 @@
    #yes{
      width: 100%;
 	    height: 33%;
-     border-style: none;
+     border-style: none none solid none;
+     border-color: #c1a072;
      background-color: #f3ff94;
    }
    #no{
@@ -45,7 +46,27 @@
      width: 100%;
      height: 50px;
      background-color: #f7ffb9;
-     border-style: none;
+     border-style: solid;
+     border-color: #c1a072;
+     font-size: 15px;
+     text-align: center;
+   }
+   #state{
+     width: 98%;
+     height: 20px;
+     background-color: #f7ffb9;
+     border-style: solid;
+     border-color: #c1a072;
+     font-size: 15px;
+     text-align: center;
+   }
+   #step{
+     width: 98%;
+     height: 20px;
+     background-color: #f7ffb9;
+     border-style: solid;
+     border-width: 2px;
+     border-color: #c1a072;
      font-size: 15px;
      text-align: center;
    }
@@ -54,24 +75,31 @@
 
  <body style="background-color:#f7ffb9">
   <div class="center">
-   <input type="button" onclick="start()" id="ctrl" value="START">
+   <input type="button" onclick="start()" id="ctrl" value="开始">
    <br>
-   <canvas width="1080" height="720" id="pic">
-   </canvas>
+   <input type="text" id="state" readonly>
+   <br>
+   <input type="text" id="step" readonly>
+   <div>
+    <input id="result" readonly>复制指令到聊天框</textarea>
+   </div>
    <div class="center2">
     选中的玩家中是否有目标玩家
-    <button onclick="Y()" id="yes">Yes</button>
-	<br>
-    <button onclick="N()" id="no">No</button>
+    <button onclick="Y()" id="yes">有</button>
+    <br>
+    <button onclick="N()" id="no">无</button>
+    <br>
+    <button onclick="settings()">
+     点按打开设置
+    </button>
    </div>
-   <div>
-    <textarea id="result" readonly="true"></textarea>
+   <div class="settings" style="display:none">
+    <input type="text" id="value" value="100000">
    </div>
   </div>
 
 <script>
 /*
-  !!大坨注释!!
   1 状态及其含义列表
   STANDBY  待命
   QUADRANT1 - QUADRANT4  象限查找
@@ -90,98 +118,32 @@ var Cmd = [ '/w @s @a[', ']' ],
 
 /* 功能性变量 */
 var Out = document.getElementById('result');
-var C = document.getElementById("pic");
-var CTX = C.getContext("2d");
-var Anim = window.requestAnimationFrame ||
-           window.webkitRequestAnimationFrame ||
-           window.mozRequestAnimationFrame ||
-           window.oRequestAnimationFrame ||
-           window.msRequestAnimationFrame ||
-           function (callback) {
-             window.setTimeout(callback, 1000 / 60);
-           };
-		   
-/* 绘图相关变量 */
-var isDown = false,
-	mouseX = 0,
-	mouseY = 0,
-    dx = 0,
-	dy = 0
-	wheel = 0,
-	scale = 1,
-	x = 0,
-	y = 0;
+var state = document.getElementById("state");
+var step = document.getElementById("step");
 
-/* 鼠标事件相关代码块 */
-{
-  C.onmousedown = (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    dx = x;
-    dy = y;
-    isDown = true;
-    C.style.cursor = 'move';
-  }
-  window.onmousemove = (e) => {
-    if (!isDown)
-      return;
-    var mouseX_ = e.clientX;
-    var mouseY_ = e.clientY;
-    x = mouseX_ - mouseX + dx;
-    y = mouseY_ - mouseY + dy;
-  }
-  window.onmousewheel = (e) =>{
-    if(e.wheelDelta){
-      wheel = e.wheelDelta;
-    } else if(e.detail){
-      wheel = e.detail;
-    }
-    e.preventDefault();
-    if(wheel < 0) scale *= 0.9;
-    if(wheel > 0) scale /= 0.9;
-  }
-  C.onmouseup =  () => {
-    isDown = false;
-    C.style.cursor = 'default';
-  }
-}
-
-Anim(Draw);
-function Draw(T){
-  CTX.clearRect(0,0,1080,720);
-  CTX.font="15px Arial";
-  CTX.fillStyle = '#000000';
-  CTX.fillText("步数: " + Step, 0, 15);
-  CTX.fillText("状态: " + State, 0, 30);
-  
-  CTX.rect(0, 35, 1080, 685);
-  CTX.stroke();
-  
-  CTX.fillStyle = '#f0ffff';
-  CTX.fillRect(1,36,1078,683);
-  
-  displayMap(x,y,scale);
+function Update(){
+  step.innerHTML = "步数: " + Step;
+  state.innerHTML = "状态: " + State;
   
   if(State != 'STANDBY'){
-    Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1], CORNER[2], DELTA[0], DELTA[1], DELTA[2] ]);
+    Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1],
+      CORNER[2], DELTA[0],
+      DELTA[1], DELTA[2]
+    ]);
   }
-  
-  Anim(Draw);
-}
-
-function displayMap(x, y, s){
-  CTX.translate(540, 360);
-  CTX.fillStyle = '#00ffff';
-  CTX.fillRect((50+x)*s,(50+y)*s,10*s,10*s);
-  CTX.translate(-540, -360);
 }
 
 function start(){
   if(State == 'STANDBY'){
     State = 'QUADRANT1';
-	DELTA = [ 10000000, 512, 10000000 ];
-	
-	document.getElementById('ctrl').value = 'RESET';
+	   DELTA = [ 10000000, 512, 10000000 ];
+    
+	document.getElementById('ctrl').value = '复位';
+    if(State != 'STANDBY'){
+      Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1], CORNER[2], DELTA[0], DELTA[1], DELTA[2] ]);
+    }
+
+    Update();
   } else {
     reset();
   }
@@ -190,75 +152,86 @@ function start(){
 function Y(){
   switch(State){
     case 'QUADRANT1':
-	  DELTA[0] = Math.floor(DELTA[0] / 2);
-	  State = 'DETAIL1';
-	  break;
+	     DELTA[0] = Math.floor(DELTA[0] / 2);
+	     State = 'DETAIL1';
+	     break;
     case 'QUADRANT2':
-	  DELTA[0] = Math.floor(DELTA[0] / 2);
-	  State = 'DETAIL1';
-	  break;
+	     DELTA[0] = Math.floor(DELTA[0] / 2);
+	     State = 'DETAIL1';
+	     break;
     case 'QUADRANT3':
-	  DELTA[0] = Math.floor(DELTA[0] / 2);
-	  State = 'DETAIL1';
-	  break;
+	     DELTA[0] = Math.floor(DELTA[0] / 2);
+	     State = 'DETAIL1';
+	     break;
     case 'QUADRANT4':
-	  DELTA[0] = Math.floor(DELTA[0] / 2);
-	  State = 'DETAIL1';
-	  break;
+	     DELTA[0] = Math.floor(DELTA[0] / 2);
+	     State = 'DETAIL1';
+	     break;
     case 'DETAIL1':
       DELTA[2] = Math.floor(DELTA[2] / 2);
-	  State = 'DETAIL2';
-	  break;
+	     State = 'DETAIL2';
+	     break;
     case 'DETAIL2':
       DELTA[0]  = Math.floor(DELTA[0] / 2);
-	  State = 'DETAIL1';
-	  break;
+	     State = 'DETAIL1';
+	     break;
   }
   
   if(State != 'STANDBY')Step++;
+  if(State != 'STANDBY'){
+    Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1], CORNER[2], DELTA[0], DELTA[1], DELTA[2] ]);
+  }
+
+  Update();
 }
 
 function N(){
   switch(State){
     case 'QUADRANT1':
       DELTA = [ -10000000, 512, 10000000 ];
-	  State = 'QUADRANT2';
+	     State = 'QUADRANT2';
       break;
     case 'QUADRANT2':
-  	  DELTA = [ -10000000, 512, -10000000 ];
-	  State = 'QUADRANT3';
+      DELTA = [ -10000000, 512, -10000000 ];
+      State = 'QUADRANT3';
       break;
     case 'QUADRANT3':
-  	  DELTA = [ 10000000, 512, -10000000 ];
-	  State = 'QUADRANT4';
-	  break;
+  	   DELTA = [ 10000000, 512, -10000000 ];
+	     State = 'QUADRANT4';
+	     break;
     case 'QUADRANT4':
-	  State = 'ERROR_NO_PLAYER_FOUND';
-	  break;
-	case 'DETAIL1':
-	  CORNER[0] += DELTA[0];
-	  DELTA[2] = Math.floor(DELTA[2] / 2);
-	  State = 'DETAIL2';
-	  break;
-	case 'DETAIL2':
-	  CORNER[2] += DELTA[2];
-	  DELTA[0] = Math.floor(DELTA[0] / 2);
-	  State = 'DETAIL1';
-	  break;
+	     State = 'ERROR_NO_PLAYER_FOUND';
+	     break;
+	   case 'DETAIL1':
+      CORNER[0] += DELTA[0];
+	     DELTA[2] = Math.floor(DELTA[2] / 2);
+	     State = 'DETAIL2';
+	     break;
+	   case 'DETAIL2':
+	     CORNER[2] += DELTA[2];
+	     DELTA[0] = Math.floor(DELTA[0] / 2);
+	     State = 'DETAIL1';
+	     break;
   }
   
-  
   if(State != 'STANDBY')Step++;
+  if(State != 'STANDBY'){
+    Out.innerHTML = CMD('CORNER', [ CORNER[0], CORNER[1], CORNER[2], DELTA[0], DELTA[1], DELTA[2] ]);
+  }
+
+  Update();
 }
 
 function reset(){
   State = 'STANDBY';
-  Out.innerHTML = '';
+  Out.innerHTML = '复制指令到聊天框';
   CORNER = [ 0, 0, 0 ];
   DELTA = [ 0, 0, 0 ];
   Step = 0;
   
-  document.getElementById('ctrl').value = 'START';
+  document.getElementById('ctrl').value = '开始';
+
+  Update();
 }
 
 function CMD(type, param){
