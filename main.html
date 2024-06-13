@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta name="viewport" 
+   content="width=device-width, 
+   initial-scale=1.0, 
+   maximum-scale=1.0,
+   minimum-scale=1.0, 
+   user-scalable=no">
+  <title>MCPF v1.3</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./css/app.css" />
+ </head>
+
+ <body>
+ 
+ <div class="content">
+ <div class="header">
+   <img class="logo" src="./img/MCPF-logo.png"></img>
+ </div>
+ <div class="main">
+  <div class="main-content">
+   <div class="settings insideBorder1">
+    <label for="initRange" class="label1">初始范围</label>
+    <input type="text" class="textBox1" id="initRange" value="100000">
+    <br>
+    <label for="initPos"  class="label1">初始中心</label>
+    <input type="text" class="textBox1" id="initPos" value="(0,0)">
+   </div>
+   <br>
+    <div class="ui insideBorder1">
+    <button id="ctrl" class="startBtn" onclick="startBtnClick()">START</button>
+    <br>
+    <input id="monitor" class="result insideBorder1" readonly>
+    <br>
+    <input id="result" class="result insideBorder1" readonly>
+    <br>
+    <span style="display:block;margin-top:5px">目标玩家是否在回传列表中:</span>
+    <br>
+    <div class="oprBox">
+     <button onclick="Y()" id="yes" class="oprBtn">YES</button>
+     <button onclick="N()" id="no" class="oprBtn">NO</button>
+    </div>
+   </div>
+   <div class="description">
+    <h2>使用方法：</h2>
+    <h3>一、准备工作</h3>
+    <p><span style="font-weight:bold">本工具仅适用于基岩版。</span>使用前先检查你的服务器是否打开了“允许作弊”选项。若未打开则无法使用本工具，执行指令后会显示<span style="color:#ff5555">选择器扩展权限不足</span>。</p>
+    <h3>二、确定初值</h3>
+    <p>可以通过r=选择器来估计目标的大致范围。若估计过程中遇到困难，也可直接将范围设为最大值30000000。需注意，输入初值时需严格按照格式输入。</p>
+    <h3>三、开始查找</h3>
+    <p>点按“开始”按钮即可开始查找。可以通过双击指令显示框快捷复制指令。将指令直接复制至游戏内聊天栏执行，并根据指令回传结果选择“是”或“否”。重复上述操作，直到显示的“坐标误差”降至±500左右，即可停止查找。±500m精度已可用于定位。</p>
+   </div>
+  </div>
+  </div>
+  </div>
+<script src="./js/DreamBreaker-v1.0.js"></script>
+<script src="./js/app.js">
+</script>
+</body>
+</html>
