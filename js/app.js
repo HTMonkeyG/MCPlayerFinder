@@ -3,19 +3,20 @@ const PlayerNotFound1 = 'Oops! 玩家似乎消失了。\n可能他离开了你�
 const PlayerNotFound2 = 'Oops! 玩家似乎消失了。\n可能他不在你所在的维度。\n复位重新查找试试？';
 const PosSyntaxError = '坐标和范围格式似乎错了qwq';
 /* 数据存储变量 */
-var step = 0,
-  workObj = new DBAM(),
-  elderWObj = workObj,
-  active = false;
+var step = 0
+  , active = false;
 
-var Out = document.getElementById('result'),
+var c223;
+
+var command = document.getElementById('result'),
   monitor = document.getElementById('monitor');
 
-Out.value = "-";
+command.value = "-";
 monitor.value = "-";
 
 document.getElementById("result").onclick = function (e) {
-  if (!workObj.data[0]) return;
+  if (!c223 || c223.getDone())
+    return;
   if (this.active) {
     this.select();
     document.execCommand('Copy');
@@ -27,18 +28,6 @@ document.getElementById("result").onclick = function (e) {
     }, 200);
   }
 };
-
-function listener(a) {
-  if (a.type === "snapshot") {
-    Out.value = genCmd(a.data[1], a.data[2], a.data[1] + a.data[3], a.data[2] + a.data[4]);
-    monitor.value = `T(${a.data[1] + a.data[3] / 2}, ${a.data[2] + a.data[4] / 2}), R = ${Math.max(a.data[3], a.data[4])}`;
-    if (Math.max(a.data[3], a.data[4]) <= 100) alert(RadiusTooSmall);
-  } else if (a.type === "error") {
-    if (a.errno == 2) {
-      alert(PlayerNotFound1);
-    }
-  }
-}
 
 function changeInitPos() {
   let initPosObj = document.getElementById('initPos');
@@ -65,7 +54,7 @@ function changeInitRange() {
 }
 
 function startBtnClick() {
-  if (!workObj.data[0]) {
+  if (!c223 || c223.getDone()) {
     init();
   } else {
     if (!active) {
@@ -82,41 +71,40 @@ function init() {
   let p = changeInitPos();
   if (r && p) {
     document.getElementById('ctrl').innerHTML = '双击复位';
-
-    workObj.listener(listener);
-    workObj.messager({ type: "init", mode: "Box1010" });
-    workObj.messager({ type: "input", code: 0, data: { x: p[0] - r, z: p[0] - r, dx: 2 * r, dz: 2 * r } });
-
+    c223 = new AutoC223(p[0] - r, p[0] - r, 2 * r, 2 * r);
+    command.value = c223 + "";
     dsblValueInput();
   }
 }
 
 function reset() {
   document.getElementById('ctrl').innerHTML = '开始查找';
-  Out.value = "-";
+  command.value = "-";
   monitor.value = "-";
-  workObj = new DBAM();
+  c223 = null;
 
   enblValueInput();
 }
 
-function Y() {
-  workObj.messager({ type: "input", code: 0 });
-}
-
-function N() {
-  workObj.messager({ type: "input", code: 1 });
-}
-
-function genCmd(xl, zl, xr, zr) {
-  let a = Math.min(xl, xr),
-    b = Math.max(xl, xr),
-    c = Math.min(zl, zr),
-    d = Math.max(zl, zr);
-
-  if (a == b || c == d) return !1;
-
-  return `/w @s @a[x=${a},y=-64,z=${c},dx=${b - a - 1},dy=1024,dz=${d - c - 1}]`;
+function listener(a) {
+  var v = c223.next(a);
+  if (!v.done) {
+    command.value = c223 + "";
+    //monitor.value = `T(${a.data[1] + a.data[3] / 2}, ${a.data[2] + a.data[4] / 2}), R = ${Math.max(a.data[3], a.data[4])}`;
+    //if (Math.max(a.data[3], a.data[4]) <= 100) alert(RadiusTooSmall);
+  } else {
+    switch (c223.state) {
+      case -1:
+        alert("检测到玩家逃逸");
+        break;
+      case -2:
+        alert("参数无效");
+        break;
+      case -3:
+        alert("已达到目标精度");
+        break;
+    }
+  }
 }
 
 function enblValueInput() {
